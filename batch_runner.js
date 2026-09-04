@@ -1,19 +1,17 @@
 // AUTOMATITZACIÓ DEL RASTREIG DE COMERÇOS DE CIUTATS PER A LA BASE DE DADES
-// AQUEST SCRIPT LLEGEIX LA LLISTA DE CIUTATS I LLOCS QUE HI HA A TARGETS.TXT
-//AQUEST SCRIPT CRIDA A SCRAPER.JS, QUE ÉS EL QUE FA EL RASTREIG A GOOGLE MAPS
-const fs = require('fs');
-const path = require('path');
+// AQUEST SCRIPT GESTIONA LA CUA DINÀMICA DIRECTAMENT DES DE FIRESTORE (scanned_cities)
+// CRIDA A SCRAPER.JS PASSANT EL DESTÍ COM A ARGUMENT
 const { spawn } = require('child_process');
 const { initializeApp, cert, getApps } = require('firebase-admin/app');
-const { getFirestore } = require('firebase-admin/firestore');
+const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 
-const TARGETS_FILE = path.join(__dirname, 'targets.txt');
-
-// Inicialitzar Firebase Admin SDK si tenim les credencials a l'entorn
+// 1. Inicialització de Firebase Admin SDK
 let db = null;
-if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT || process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+
+if (serviceAccountKey) {
     try {
-        const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+        const serviceAccount = JSON.parse(serviceAccountKey);
         if (getApps().length === 0) {
             initializeApp({
                 credential: cert(serviceAccount)
@@ -24,29 +22,26 @@ if (process.env.FIREBASE_SERVICE_ACCOUNT) {
         console.error("❌ Error inicialitzant Firebase Admin en batch_runner:", err.message);
     }
 } else {
-    console.warn("⚠️ Advertència: FIREBASE_SERVICE_ACCOUNT no està definit a les variables d'entorn. S'iniciarà des del principi.");
-}
-
-
-// 1. Leer y limpiar la lista del archivo de texto
-function loadTargets() {
-    if (!fs.existsSync(TARGETS_FILE)) {
-        console.error(`❌ No se encontró el archivo: ${TARGETS_FILE}`);
+    try {
+        // Fallback per a proves locals si existeix l'arxiu json
+        const localKey = require('./firebase-key.json');
+        if (getApps().length === 0) {
+            initializeApp({
+                credential: cert(localKey)
+            });
+        }
+        db = getFirestore();
+    } catch {
+        console.error("❌ Error crític: Cal configurar FIREBASE_SERVICE_ACCOUNT a les variables d'entorn.");
         process.exit(1);
     }
-
-    const raw = fs.readFileSync(TARGETS_FILE, 'utf-8');
-    return raw
-        .split(/\r?\n/)
-        .map(line => line.trim())
-        .filter(line => line.length > 0 && !line.startsWith('#'));
 }
 
-// 2. Ejecutar scraper.js para una ubicación de forma síncrona/promesa
+// 2. Executar scraper.js per a un destí retornant el resultat
 function runScraperForTarget(target, index, total) {
     return new Promise((resolve) => {
         console.log(`\n======================================================`);
-        console.log(`📍 [${index + 1}/${total}] Procesando: "${target}"`);
+        console.log(`📍 [${index + 1}/${total}] Processant destí: "${target}"`);
         console.log(`======================================================`);
 
         const scraper = spawn('node', ['scraper.js', `"${target}"`], {
@@ -56,75 +51,101 @@ function runScraperForTarget(target, index, total) {
 
         scraper.on('close', (code) => {
             if (code === 0) {
-                console.log(`✅ Completado con éxito: "${target}"`);
+                console.log(`✅ Completat amb èxit: "${target}"`);
+                resolve({ success: true, code });
             } else {
-                console.warn(`⚠️ Finalizado con código de aviso/error (${code}) en: "${target}"`);
+                console.warn(`⚠️ Finalitzat amb avís o codi d'error (${code}) a: "${target}"`);
+                resolve({ success: false, code });
             }
-            resolve();
         });
 
         scraper.on('error', (err) => {
-            console.error(`❌ Error lanzando el scraper para "${target}":`, err.message);
-            resolve();
+            console.error(`❌ Error executant el scraper per a "${target}":`, err.message);
+            resolve({ success: false, error: err.message });
         });
     });
 }
 
-// 3. Bucle secuencial uno a uno
+// 3. Orquestrador principal del lot
 async function startBatch() {
-    const targets = loadTargets();
-    const total = targets.length;
+    const BATCH_LIMIT = 15; // Límit per execució per controlar els cicles
 
-    if (total === 0) {
-        console.log('ℹ️ No hay ubicaciones válidas en targets.txt.');
-        return;
+    console.log("⏳ Consultant destins pendents a la col·lecció 'scanned_cities'...");
+
+    let snapshot;
+    try {
+        snapshot = await db.collection('scanned_cities')
+            .where('status', '==', 'pending')
+            .orderBy('user_hits', 'desc')
+            .limit(BATCH_LIMIT)
+            .get();
+    } catch (err) {
+        console.error("❌ Error obtenint destins de Firestore:", err.message);
+        // Si cal un índex compost (status + user_hits), Firestore ho indicarà en l'error
+        process.exit(1);
     }
 
-    let startIndex = 0;
+    if (snapshot.empty) {
+        console.log("ℹ️ No pending targets found. Exiting gracefully.");
+        process.exit(0);
+    }
 
-    if (db) {
+    const pendingTargets = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ref: doc.ref,
+        name: doc.data().target_name || doc.id,
+        user_hits: doc.data().user_hits || 0
+    }));
+
+    const total = pendingTargets.length;
+    console.log(`🚀 S'han trobat ${total} destins pendents. Iniciant processament per prioritat de demanda...`);
+    const globalStart = Date.now();
+
+    for (let i = 0; i < total; i++) {
+        const item = pendingTargets[i];
+
+        // 3.1. Marcar l'estat com a "in_progress" abans de començar
         try {
-            console.log("⏳ Consultant l'estat del scraper a Firestore (col·lecció _system_state, document scraper_progress)...");
-            const docRef = db.collection('_system_state').doc('scraper_progress');
-            const docSnap = await docRef.get();
-
-            if (docSnap.exists) {
-                const data = docSnap.data();
-                const lastCompleted = data.last_completed_target;
-                if (lastCompleted) {
-                    const normalizedLast = lastCompleted.trim().toLowerCase();
-                    const idx = targets.findIndex(t => t.trim().toLowerCase() === normalizedLast);
-                    if (idx !== -1) {
-                        if (idx === total - 1) {
-                            console.log(`ℹ️ L'últim destí completat és el final de la llista: "${lastCompleted}".`);
-                            console.log(`🔄 Reiniciant el lot des del principi.`);
-                            startIndex = 0;
-                        } else {
-                            startIndex = idx + 1;
-                            console.log(`⏭️ Reprenent des del destí [${startIndex + 1}/${total}]: "${targets[startIndex]}" (l'últim completat va ser "${lastCompleted}").`);
-                        }
-                    } else {
-                        console.log(`⚠️ L'últim destí completat ("${lastCompleted}") no s'ha trobat a targets.txt. S'iniciarà des del principi.`);
-                    }
-                }
-            } else {
-                console.log("ℹ️ No s'ha trobat estat anterior a Firestore. S'iniciarà des del principi.");
-            }
+            await item.ref.update({
+                status: 'in_progress',
+                scrape_started_at: FieldValue.serverTimestamp()
+            });
         } catch (err) {
-            console.error("❌ Error en recuperar l'estat de progrés de Firestore:", err.message);
-            console.log("⚠️ Continuant des del principi per defecte.");
+            console.warn(`⚠️ No s'ha pogut actualitzar l'estat a in_progress per a "${item.name}":`, err.message);
+        }
+
+        // 3.2. Execució de l'scraping
+        const result = await runScraperForTarget(item.name, i, total);
+
+        // 3.3. Actualitzar estat final del destí
+        try {
+            if (result.success) {
+                await item.ref.update({
+                    status: 'completed',
+                    last_scanned_at: FieldValue.serverTimestamp()
+                });
+
+                // Mantenir la traçabilitat històrica a _system_state/scraper_progress
+                await db.collection('_system_state').doc('scraper_progress').set({
+                    last_completed_target: item.name,
+                    updated_at: FieldValue.serverTimestamp(),
+                    completed_count: FieldValue.increment(1)
+                }, { merge: true });
+
+            } else {
+                await item.ref.update({
+                    status: 'failed',
+                    error_message: result.error || `Exit code ${result.code}`,
+                    last_attempt_at: FieldValue.serverTimestamp()
+                });
+            }
+        } catch (updateErr) {
+            console.error(`❌ Error actualitzant l'estat a Firestore per a "${item.name}":`, updateErr.message);
         }
     }
 
-    console.log(`🚀 Iniciando lote de rastreo para ${total - startIndex} de ${total} ubicaciones...`);
-    const globalStart = Date.now();
-
-    for (let i = startIndex; i < total; i++) {
-        await runScraperForTarget(targets[i], i, total);
-    }
-
     const totalMin = ((Date.now() - globalStart) / 1000 / 60).toFixed(1);
-    console.log(`\n🎉 LOTE FINALIZADO: Se procesaron las ubicaciones restantes en ${totalMin} minutos.`);
+    console.log(`\n🎉 LOT FINALITZAT: S'han processat ${total} destins en ${totalMin} minuts.`);
 }
 
 startBatch();
