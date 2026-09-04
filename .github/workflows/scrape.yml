@@ -20,8 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm init -y
-          npm install playwright firebase-admin
+          npm install playwright@1.50.1 firebase-admin
           chmod -R +x node_modules/.bin || true
 
       - name: Install Playwright Browsers
