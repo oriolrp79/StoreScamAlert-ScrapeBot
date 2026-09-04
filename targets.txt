@@ -1,0 +1,818 @@
+# AQUEST ARXIU ÉS PER INTRODUIR ELS NOMS DE CIUTATS I LLOCS PER PODER FER UN ESCANEIG DE COMERÇOS
+# L'ESCANEIG ES FA A TRAVÉS DE batch_runner.js i scraper.js
+
+
+# Ciudades principales
+# Zonas / Barrios específicos
+# Puntos de interés internacional
+
+
+Graslei et Korenlei, Gand
+Outremeuse (Liège)
+Le Carré (Anvers)
+La Grand-Place de Bruxelles
+Château des Comtes de Flandre
+Beffroi de Bruges
+Atomium, Bruxelles
+Mémorial de Waterloo
+Abbaye d'Orval
+Béguinage de Louvain
+France
+Paris
+Montmartre
+Le Marais
+Latin Quarter
+Champs-Élysées
+Seine Riverbanks
+Eiffel Tower
+Louvre Museum
+Notre-Dame Cathedral
+Arc de Triomphe
+Sacré-Cœur Basilica
+Nice
+Old Nice
+Promenade des Anglais
+Castle Hill
+Lyon
+Old Lyon
+Presqu'île
+Basilica of Notre-Dame de Fourvière
+Spain
+Madrid
+La Latina
+Malasaña
+Chueca
+Literary Quarter
+Gran Vía
+Puerta del Sol
+Plaza Mayor
+Royal Palace of Madrid
+Prado Museum
+Retiro Park
+Barcelona
+Gothic Quarter
+El Born
+Gràcia
+Eixample
+La Rambla
+Sagrada Familia
+Park Güell
+Casa Batlló
+Casa Milà
+Seville
+Santa Cruz
+Triana
+Plaza de España
+Royal Alcázar of Seville
+Giralda
+Seville Cathedral
+United States
+New York City
+Manhattan
+SoHo
+Greenwich Village
+DUMBO
+Williamsburg
+Times Square
+Central Park
+Statue of Liberty
+Empire State Building
+Brooklyn Bridge
+Los Angeles
+Hollywood
+Venice Beach
+Beverly Hills
+Santa Monica
+Hollywood Walk of Fame
+Hollywood Sign
+Santa Monica Pier
+San Francisco
+Fisherman's Wharf
+Mission District
+Castro
+Golden Gate Bridge
+Alcatraz Island
+Italy
+Rome
+Trastevere
+Monti
+Historic Centre of Rome
+Colosseum
+Roman Forum
+Pantheon
+Trevi Fountain
+Piazza Navona
+Gelateria del Pantheon, Piazza della Rotonda
+Florence
+Santa Maria Novella
+San Giovanni
+Oltrarno
+Florence Cathedral
+Ponte Vecchio
+Uffizi Gallery
+Venice
+San Marco
+Dorsoduro
+Cannaregio
+St. Mark's Square
+Rialto Bridge
+Doge's Palace
+Brooklyn
+Queens
+Harlem
+Metropolitan Museum of Art
+One World Trade Center
+High Line
+Broadway
+Downtown Los Angeles
+Silver Lake
+Griffith Park
+Griffith Observatory
+Getty Center
+Universal Studios Hollywood
+Rodeo Drive
+Chicago
+The Loop
+River North
+Lincoln Park
+Wicker Park
+West Loop
+Hyde Park
+Millennium Park
+Cloud Gate
+Navy Pier
+Willis Tower
+Art Institute of Chicago
+Magnificent Mile
+Wrigley Field
+Chicago Riverwalk
+Houston
+Downtown Houston
+Museum District
+Montrose
+The Heights
+Space Center Houston
+Houston Museum of Natural Science
+Buffalo Bayou Park
+Museum of Fine Arts Houston
+Houston Zoo
+Phoenix
+Downtown Phoenix
+Roosevelt Row
+Arcadia
+Camelback Mountain
+Desert Botanical Garden
+Heard Museum
+Papago Park
+South Mountain Park
+Philadelphia
+Old City
+Center City
+Rittenhouse Square
+Fishtown
+Independence Hall
+Liberty Bell
+Philadelphia Museum of Art
+Rocky Steps
+Reading Terminal Market
+San Antonio
+Downtown San Antonio
+King William Historic District
+Pearl District
+The Alamo
+San Antonio River Walk
+San Antonio Missions National Historical Park
+Market Square
+Tower of the Americas
+San Diego
+Gaslamp Quarter
+La Jolla
+Balboa Park
+Little Italy
+Coronado
+Pacific Beach
+San Diego Zoo
+USS Midway Museum
+Cabrillo National Monument
+Coronado Beach
+Dallas
+Downtown Dallas
+Deep Ellum
+Uptown
+Bishop Arts District
+Dallas Arts District
+Dealey Plaza
+Sixth Floor Museum
+Reunion Tower
+Klyde Warren Park
+Dallas Arboretum and Botanical Garden
+Chinatown
+Nob Hill
+Haight-Ashbury
+North Beach
+Lombard Street
+Pier 39
+Painted Ladies
+Coit Tower
+Las Vegas
+Las Vegas Strip
+Downtown Las Vegas
+Fremont Street
+Vilassar de Mar
+Arts District
+Bellagio Fountains
+Fremont Street Experience
+Sphere
+High Roller
+Welcome to Fabulous Las Vegas Sign
+Miami
+South Beach
+Miami Beach
+Wynwood
+Little Havana
+Brickell
+Coconut Grove
+Ocean Drive
+Art Deco Historic District
+Wynwood Walls
+Calle Ocho
+Vizcaya Museum and Gardens
+Bayside Marketplace
+Washington, D.C.
+Capitol Hill
+Georgetown
+Dupont Circle
+Adams Morgan
+Penn Quarter
+National Mall
+United States Capitol
+White House
+Lincoln Memorial
+Washington Monument
+Smithsonian National Air and Space Museum
+Smithsonian Museum of Natural History
+Martin Luther King Jr. Memorial
+New Orleans
+French Quarter
+Garden District
+Marigny
+Bywater
+Bourbon Street
+Jackson Square
+St. Louis Cathedral
+Frenchmen Street
+National WWII Museum
+City Park
+Boston
+Back Bay
+Beacon Hill
+North End
+South End
+Seaport District
+Freedom Trail
+Boston Common
+Faneuil Hall
+Fenway Park
+Boston Public Garden
+Seattle
+Pioneer Square
+Ballard
+Belltown
+Fremont
+Space Needle
+Pike Place Market
+Chihuly Garden and Glass
+Museum of Pop Culture
+Seattle Waterfront
+Austin
+Downtown Austin
+South Congress
+East Austin
+Rainey Street
+Texas State Capitol
+Barton Springs Pool
+Zilker Metropolitan Park
+Lady Bird Lake
+Congress Avenue Bridge
+Atlanta
+Downtown Atlanta
+Midtown
+Buckhead
+Inman Park
+Sweet Auburn
+Georgia Aquarium
+World of Coca-Cola
+Atlanta BeltLine
+Martin Luther King Jr. National Historical Park
+Centennial Olympic Park
+Nashville
+Downtown Nashville
+Music Row
+The Gulch
+East Nashville
+Germantown
+Broadway Historic District
+Grand Ole Opry
+Ryman Auditorium
+Country Music Hall of Fame and Museum
+The Parthenon
+Honolulu
+Waikiki
+Downtown Honolulu
+Kaka'ako
+Manoa
+Waikiki Beach
+Diamond Head State Monument
+Pearl Harbor National Memorial
+USS Arizona Memorial
+Iolani Palace
+Turkey
+Istanbul
+Sultanahmet
+Beyoğlu
+Karaköy
+Balat
+Taksim Square
+Hagia Sophia
+Blue Mosque
+Topkapi Palace
+Grand Bazaar
+Galata Tower
+Antalya
+Kaleiçi
+Old City Marina of Antalya
+Hadrian's Gate
+Cappadocia
+Göreme
+Göreme National Park
+Göreme Open Air Museum
+Uçhisar Castle
+Mexico
+Mexico City
+Coyoacán
+Roma
+Condesa
+Historic Center of Mexico City
+Paseo de la Reforma
+Zócalo
+Palacio de Bellas Artes
+Chapultepec Castle
+Basilica of Our Lady of Guadalupe
+Teotihuacan Pyramids
+Cancún
+Hotel Zone of Cancún
+Puerto Juárez
+Delfines Beach
+El Rey Archaeological Zone
+Oaxaca
+Jalatlaco
+Santo Domingo
+Zócalo of Oaxaca
+Church of Santo Domingo de Guzmán
+Monte Albán
+United Kingdom
+London
+Westminster
+Soho
+Covent Garden
+Camden Town
+Notting Hill
+Buckingham Palace
+Big Ben
+Tower of London
+London Eye
+Tower Bridge
+British Museum
+Edinburgh
+Old Town
+New Town
+Royal Mile
+Edinburgh Castle
+Arthur's Seat
+Germany
+Berlin
+Mitte
+Kreuzberg
+Friedrichshain
+Prenzlauer Berg
+Brandenburg Gate
+Berlin Wall
+East Side Gallery
+Reichstag Building
+Museum Island
+Munich
+Altstadt-Lehel
+Marienplatz
+English Garden
+Nymphenburg Palace
+Greece
+Athens
+Plaka
+Monastiraki
+Psiri
+Anafiotika
+Acropolis of Athens
+Parthenon
+Ancient Agora of Athens
+Temple of Olympian Zeus
+Santorini
+Fira
+Oia
+Santorini Caldera
+Oia Castle
+Blue Domed Churches of Oia
+Crete
+Chania
+Old Venetian Port of Chania
+Old Town of Chania
+Austria
+Vienna
+Innere Stadt
+Neubau
+Leopoldstadt
+Ringstraße
+Schönbrunn Palace
+Hofburg Palace
+St. Stephen's Cathedral
+Belvedere Palace
+Salzburg
+Altstadt Salzburg
+Nonntal
+Hohensalzburg Fortress
+Mirabell Palace
+Mozart's Birthplace
+United Arab Emirates
+Dubai
+Downtown Dubai
+Dubai Marina
+Deira
+Palm Jumeirah
+Burj Khalifa
+Dubai Mall
+Burj Al Arab
+Dubai Frame
+Abu Dhabi
+Abu Dhabi Corniche
+Saadiyat Island
+Sheikh Zayed Grand Mosque
+Louvre Abu Dhabi
+Qasr Al Watan
+Japan
+Tokyo
+Shinjuku
+Shibuya
+Asakusa
+Akihabara
+Ginza
+Harajuku
+Shibuya Crossing
+Sensō-ji Temple
+Tokyo Tower
+Meiji Shrine
+Tokyo Skytree
+Kyoto
+Gion
+Higashiyama
+Arashiyama
+Fushimi Inari Shrine
+Kinkaku-ji
+Arashiyama Bamboo Grove
+Kiyomizu-dera
+Saudi Arabia
+Riyadh
+Al-Balad Riyadh
+Al Olaya
+Kingdom Centre
+Al Masmak Fortress
+Boulevard City
+Jeddah
+Al-Balad Jeddah
+Jeddah Corniche
+King Fahd's Fountain
+Portugal
+Lisbon
+Alfama
+Bairro Alto
+Baixa
+Chiado
+Belém
+Belém Tower
+Jerónimos Monastery
+São Jorge Castle
+Commerce Square
+Porto
+Ribeira
+Baixa Porto
+Cedofeita
+Clérigos Tower
+Livraria Lello
+Dom Luís I Bridge
+Palácio da Bolsa
+Netherlands
+Amsterdam
+Jordaan
+De Pijp
+Red Light District
+Museum Quarter
+Canals of Amsterdam
+Rijksmuseum
+Van Gogh Museum
+Anne Frank House
+Dam Square
+Rotterdam
+Kop van Zuid
+Delfshaven
+Cube Houses
+Erasmus Bridge
+Markthal
+Malaysia
+Kuala Lumpur
+Bukit Bintang
+Chinatown Kuala Lumpur
+Petaling Street
+KLCC
+Petronas Twin Towers
+Batu Caves
+Kuala Lumpur Tower
+Merdeka Square
+Penang
+George Town
+Armenian Street
+Little India Penang
+Kek Lok Si Temple
+Cheong Fatt Tze Mansion
+Thailand
+Bangkok
+Rattanakosin
+Sukhumvit
+Silom
+Yaowarat
+Grand Palace
+Wat Pho
+Wat Arun
+Chatuchak Weekend Market
+Chiang Mai
+Old City Chiang Mai
+Nimman
+Wat Phra That Doi Southep
+Wat Chedi Luang
+Phuket
+Old Phuket Town
+Patong
+Big Buddha Phuket
+Wat Chalong
+Poland
+Kraków
+Old Town Kraków
+Kazimierz
+Main Square Kraków
+Wawel Royal Castle
+St. Mary's Basilica
+Warsaw
+Old Town Warsaw
+Praga Warsaw
+Palace of Culture and Science
+Royal Castle Warsaw
+Łazienki Park
+Canada
+Toronto
+Downtown Toronto
+Kensington Market
+Distillery District
+Yorkville
+CN Tower
+Casa Loma
+Ripley's Aquarium of Canada
+Vancouver
+Gastown
+Yaletown
+Granville Island
+Stanley Park
+Capilano Suspension Bridge
+Montreal
+Old Montreal
+Mile End
+Le Plateau-Mont-Royal
+Notre-Dame Basilica of Montreal
+Mount Royal Park
+Croatia
+Dubrovnik
+Old Town Dubrovnik
+Walls of Dubrovnik
+Stradun
+Fort Lovrijenac
+Split
+Grad Split
+Varoš
+Diocletian's Palace
+Riva Promenade
+Cathedral of Saint Domnius
+Zagreb
+Upper Town Zagreb
+Lower Town Zagreb
+Zagreb Cathedral
+St. Mark's Church Zagreb
+Vietnam
+Hanoi
+Old Quarter Hanoi
+Ba Dinh
+Hoan Kiem
+Hoan Kiem Lake
+Ho Chi Minh Mausoleum
+Temple of Literature Hanoi
+Ho Chi Minh City
+District 1 Ho Chi Minh City
+District 3 Ho Chi Minh City
+Cholon
+Independence Palace
+Saigon Notre-Dame Basilica
+Cu Chi Tunnels
+Ben Thanh Market
+South Korea
+Seoul
+Myeongdong
+Insadong
+Hongdae
+Gangnam
+Bukchon Hanok Village
+Gyeongbokgung Palace
+N Seoul Tower
+Dongdaemun Design Plaza
+Cheonggyecheon Stream
+Busan
+Haeundae
+Gamcheon Culture Village
+Nampo-dong
+Haeundae Beach
+Haedong Yonggungsa Temple
+Jagalchi Fish Market
+Hungary
+Budapest
+Castle District Budapest
+Belváros
+Erzsébetváros
+Hungarian Parliament Building
+Fisherman's Bastion
+Buda Castle
+Széchenyi Chain Bridge
+Széchenyi Thermal Bath
+St. Stephen's Basilica
+Morocco
+Marrakesh
+Medina of Marrakesh
+Gueliz
+Hivernage
+Jemaa el-Fnaa
+Koutoubia Mosque
+Bahia Palace
+Majorelle Garden
+Ben Youssef Madrasa
+Fez
+Fes el-Bali
+Fes el-Jdid
+Chouara Tannery
+University of al-Qarawiyyin
+Mosque of al-Qarawiyyin
+Bab Bou Jeloud
+Egypt
+Cairo
+Historic Cairo
+Zamalek
+Coptic Cairo
+Giza Pyramids
+Great Sphinx of Giza
+Grand Egyptian Museum
+Khan el-Khalili
+Saladin Citadel
+Luxor
+East Bank Luxor
+West Bank Luxor
+Karnak Temple
+Luxor Temple
+Valley of the Kings
+Temple of Hatshepsut
+Denmark
+Copenhagen
+Indre By
+Nyhavn
+Vesterbro
+Nørrebro
+Christianshavn
+Nyhavn Harbour
+Tivoli Gardens
+The Little Mermaid
+Amalienborg Palace
+Rosenborg Castle
+Singapore
+Marina Bay
+Chinatown Singapore
+Little India Singapore
+Kampong Glam
+Orchard Road
+Marina Bay Sands
+Gardens by the Bay
+Merlion Park
+Sentosa Island
+Singapore Botanic Gardens
+South Africa
+Cape Town
+Bo-Kaap
+Camps Bay
+V&A Waterfront
+Table Mountain
+Cape of Good Hope
+Robben Island
+Johannesburg
+Soweto
+Rosebank
+Maboneng
+Apartheid Museum
+Nelson Mandela House
+Vilakazi Street
+Constitution Hill
+Australia
+Sydney
+The Rocks
+Darling Harbour
+Surry Hills
+Bondi
+Sydney Opera House
+Sydney Harbour Bridge
+Bondi Beach
+Melbourne
+Fitzroy
+Southbank
+St Kilda
+Federation Square
+Hosier Lane
+Royal Botanic Gardens Victoria
+Indonesia
+Denpasar
+Bali
+Ubud
+Seminyak
+Canggu
+Kuta
+Uluwatu
+Tanah Lot Temple
+Uluwatu Temple
+Ubud Monkey Forest
+Tegallalang Rice Terraces
+Jakarta
+Kota Tua Jakarta
+Menteng
+National Monument Jakarta
+Istiqlal Mosque
+Jakarta Cathedral
+Barcelona, Spain
+Madrid, Spain
+Paris, France
+Rome, Italy
+London, United Kingdom
+Amsterdam, Netherlands
+Venice, Italy
+Florence, Italy
+Milan, Italy
+Prague, Czechia
+Vienna, Austria
+Berlin, Germany
+Munich, Germany
+Lisbon, Portugal
+Porto, Portugal
+Athens, Greece
+Istanbul, Turkey
+Budapest, Hungary
+Dublin, Ireland
+Brussels, Belgium
+New York, USA
+Los Angeles, USA
+Las Vegas, USA
+Miami, USA
+San Francisco, USA
+Orlando, USA
+Cancun, Mexico
+Mexico City, Mexico
+Rio de Janeiro, Brazil
+Buenos Aires, Argentina
+Bangkok, Thailand
+Phuket, Thailand
+Singapore, Singapore
+Tokyo, Japan
+Kyoto, Japan
+Osaka, Japan
+Seoul, South Korea
+Hong Kong, China
+Taipei, Taiwan
+Kuala Lumpur, Malaysia
+Dubai, United Arab Emirates
+Abu Dhabi, United Arab Emirates
+Marrakech, Morocco
+Cairo, Egypt
+Sydney, Australia
+Melbourne, Australia
+Toronto, Canada
+Vancouver, Canada
+Seville, Spain
+Valencia, Spain
+Outremeuse, Liège
+Le Carré, Anvers
