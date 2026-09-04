@@ -1,0 +1,35 @@
+name: Scrape Critical Stores
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: |
+          npm init -y
+          npm install playwright firebase-admin
+          chmod -R +x node_modules/.bin || true
+
+      - name: Install Playwright Browsers
+        run: |
+          npx --yes playwright install --with-deps chromium
+
+      - name: Run Batch Scraper
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          node batch_runner.js
