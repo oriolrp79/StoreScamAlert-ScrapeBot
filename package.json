@@ -1,6 +1,9 @@
 {
+  "name": "storescamalert-scrapebot",
+  "version": "1.0.0",
+  "main": "batch_runner.js",
   "dependencies": {
-    "firebase-admin": "^14.3.0",
-    "playwright": "^1.62.1"
+    "firebase-admin": "^13.1.0",
+    "playwright": "1.50.1"
   }
 }
