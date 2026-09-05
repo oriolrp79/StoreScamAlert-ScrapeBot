@@ -118,13 +118,7 @@ async function startBatch() {
                     last_scanned_at: FieldValue.serverTimestamp()
                 });
 
-                // Mantenir la traçabilitat històrica a _system_state/scraper_progress
-                await db.collection('_system_state').doc('scraper_progress').set({
-                    last_completed_target: item.name,
-                    updated_at: FieldValue.serverTimestamp(),
-                    completed_count: FieldValue.increment(1)
-                }, { merge: true });
-
+                
             } else {
                 await item.ref.update({
                     status: 'failed',
