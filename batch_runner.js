@@ -75,7 +75,7 @@ async function startBatch() {
     let snapshot;
     try {
         snapshot = await db.collection('scanned_cities')
-            .where('status', '==', 'pending')
+            .where('status', 'in', ['pending', 'in_progress'])
             .orderBy('user_hits', 'desc')
             .limit(BATCH_LIMIT)
             .get();
@@ -105,15 +105,8 @@ async function startBatch() {
         const item = pendingTargets[i];
 
         // 3.1. Marcar l'estat com a "in_progress" abans de començar
-        try {
-            await item.ref.update({
-                status: 'in_progress',
-                scrape_started_at: FieldValue.serverTimestamp()
-            });
-        } catch (err) {
-            console.warn(`⚠️ No s'ha pogut actualitzar l'estat a in_progress per a "${item.name}":`, err.message);
-        }
-
+        // (ELIMINAT per evitar bloquejos si el job es talla a mig fer)
+       
         // 3.2. Execució de l'scraping
         const result = await runScraperForTarget(item.name, i, total);
 
