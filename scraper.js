@@ -187,15 +187,6 @@ async function scrapeCity(cityName) {
     }, { merge: true });
   }
 
-  // Guardar el cursor/estat de progrés de manera atòmica al mateix batch
-  console.log(`💾 Afegint progrés del scraper a Firestore per a: ${cityName}...`);
-  const progressRef = db.collection('_system_state').doc('scraper_progress');
-  batch.set(progressRef, {
-    last_completed_target: cityName,
-    updated_at: FieldValue.serverTimestamp(),
-    completed_count: FieldValue.increment(1)
-  }, { merge: true });
-
 // Actualitzar l'estat de la ciutat a 'completed' a scanned_cities
   const citySnapshot = await db.collection('scanned_cities')
     .where('target_name', '==', cityName)
