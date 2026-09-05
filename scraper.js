@@ -196,6 +196,30 @@ async function scrapeCity(cityName) {
     completed_count: FieldValue.increment(1)
   }, { merge: true });
 
+// Actualitzar l'estat de la ciutat a 'completed' a scanned_cities
+  const citySnapshot = await db.collection('scanned_cities')
+    .where('target_name', '==', cityName)
+    .get();
+
+  if (!citySnapshot.empty) {
+    citySnapshot.forEach((doc) => {
+      batch.set(doc.ref, {
+        status: 'completed',
+        completed_at: FieldValue.serverTimestamp(),
+        critical_count: criticalStores.size
+      }, { merge: true });
+    });
+  } else {
+    // Si la ciutat s'ha llançat per ID directa
+    const fallbackId = cityName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+    batch.set(db.collection('scanned_cities').doc(fallbackId), {
+      target_name: cityName,
+      status: 'completed',
+      completed_at: FieldValue.serverTimestamp(),
+      critical_count: criticalStores.size
+    }, { merge: true });
+  }
+  
   await batch.commit();
   const totalMinutes = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
   console.log(`\n✅ Escombrada finalitzada per a ${cityName} en ${totalMinutes} minuts: ${criticalStores.size} comerços crítics desats a Firestore.`);
