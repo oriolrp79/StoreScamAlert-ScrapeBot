@@ -188,34 +188,50 @@ async function scrapeCity(cityName) {
   }
 
 // Actualitzar l'estat de la ciutat a 'completed' a scanned_cities
-  const citySnapshot = await db.collection('scanned_cities')
-    .where('target_name', '==', cityName)
-    .get();
+  const cleanCity = cityName.replace(/^["']|["']$/g, '').trim();
+  const cityDocId = cleanCity.toLowerCase().replace(/[^a-z0-9]/g, '_');
 
-  if (!citySnapshot.empty) {
-    citySnapshot.forEach((doc) => {
-      batch.set(doc.ref, {
+  // 1. Comprovar primer si el document existeix directament amb el seu ID normalitzat
+  const cityDocRef = db.collection('scanned_cities').doc(cityDocId);
+  const cityDocSnap = await cityDocRef.get();
+
+  if (cityDocSnap.exists) {
+    batch.set(cityDocRef, {
+      status: 'completed',
+      target_name: cleanCity,
+      completed_at: FieldValue.serverTimestamp(),
+      critical_count: criticalStores.size
+    }, { merge: true });
+  } else {
+    // 2. Si l'ID era diferent, buscar per camp de text
+    const citySnapshot = await db.collection('scanned_cities')
+      .where('target_name', '==', cleanCity)
+      .limit(1)
+      .get();
+
+    if (!citySnapshot.empty) {
+      batch.set(citySnapshot.docs[0].ref, {
         status: 'completed',
         completed_at: FieldValue.serverTimestamp(),
         critical_count: criticalStores.size
       }, { merge: true });
-    });
-  } else {
-    // Si la ciutat s'ha llançat per ID directa
-    const fallbackId = cityName.toLowerCase().replace(/[^a-z0-9]/g, '_');
-    batch.set(db.collection('scanned_cities').doc(fallbackId), {
-      target_name: cityName,
-      status: 'completed',
-      completed_at: FieldValue.serverTimestamp(),
-      critical_count: criticalStores.size
-    }, { merge: true });
+    } else {
+      // 3. Si no existia enlloc, es crea amb el seu ID normalitzat
+      batch.set(cityDocRef, {
+        target_name: cleanCity,
+        status: 'completed',
+        completed_at: FieldValue.serverTimestamp(),
+        critical_count: criticalStores.size
+      }, { merge: true });
+    }
   }
-  
+
   await batch.commit();
   const totalMinutes = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
   console.log(`\n✅ Escombrada finalitzada per a ${cityName} en ${totalMinutes} minuts: ${criticalStores.size} comerços crítics desats a Firestore.`);
 }
 
-// Lectura de la ciutat com a argument de línia d'ordres
-const targetCity = process.argv[2] || 'Mataró';
+// Lectura de la ciutat com a argument de línia d'ordres netejant possibles cometes
+const rawCity = process.argv[2] || 'Mataró';
+const targetCity = rawCity.replace(/^["']|["']$/g, '').trim();
 scrapeCity(targetCity).catch(console.error);
