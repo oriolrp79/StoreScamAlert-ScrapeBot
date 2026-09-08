@@ -44,9 +44,9 @@ function runScraperForTarget(target, index, total) {
         console.log(`📍 [${index + 1}/${total}] Processant destí: "${target}"`);
         console.log(`======================================================`);
 
-        const scraper = spawn('node', ['scraper.js', `"${target}"`], {
+        const scraper = spawn('node', ['scraper.js', target.trim()], {
             stdio: 'inherit',
-            shell: true
+            shell: false
         });
 
         scraper.on('close', (code) => {
