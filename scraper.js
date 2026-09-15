@@ -75,6 +75,40 @@ async function scrapeCity(cityName) {
   ];
 
   const criticalStores = new Map();
+  let totalSavedStores = 0;
+
+  // Funció per pujar immediatament el lot de la categoria a Firestore
+  async function flushCategoryStores() {
+    if (criticalStores.size === 0) return;
+
+    console.log(`\n💾 Pujant ${criticalStores.size} comerços crítics d'aquesta categoria a Firestore...`);
+    const batch = db.batch();
+    for (const [id, storeData] of criticalStores.entries()) {
+      const docRef = db.collection('critical_stores').doc(id);
+      batch.set(docRef, {
+        ...storeData,
+        updatedAt: FieldValue.serverTimestamp()
+      }, { merge: true });
+    }
+
+    await batch.commit();
+    totalSavedStores += criticalStores.size;
+    criticalStores.clear(); // Alliberem memòria per a la següent categoria
+  }
+
+  // Interceptar interrupcions o timeout de GitHub Actions per assegurar persistència
+  const handleTermination = async (signal) => {
+    console.warn(`\n⚠️ Senyal ${signal} rebut (possible timeout del runner). Salvant dades d'emergència...`);
+    try {
+      await flushCategoryStores();
+      await browser.close().catch(() => {});
+    } finally {
+      process.exit(0);
+    }
+  };
+
+  process.on('SIGTERM', () => handleTermination('SIGTERM'));
+  process.on('SIGINT', () => handleTermination('SIGINT'));
 
   for (const category of categories) {
     const query = `${category} en ${cityName}`;
@@ -172,63 +206,44 @@ async function scrapeCity(cityName) {
     } catch (err) {
       console.warn(`   ⚠️ Avís cercant ${category}: ${err.message}`);
     }
+
+    // Pujada incremental a Firestore en acabar cadascuna de les categories
+    await flushCategoryStores();
   }
 
   await browser.close();
 
-  // 4. Pujada a Firebase Firestore en un sol batch atòmic
-  console.log(`\n💾 Pujant ${criticalStores.size} comerços crítics a Firebase Firestore...`);
-  const batch = db.batch();
-  for (const [id, storeData] of criticalStores.entries()) {
-    const docRef = db.collection('critical_stores').doc(id);
-    batch.set(docRef, {
-      ...storeData,
-      updatedAt: FieldValue.serverTimestamp()
-    }, { merge: true });
-  }
-
-// Actualitzar l'estat de la ciutat a 'completed' a scanned_cities
+  // Actualitzar l'estat de la ciutat a 'completed' a scanned_cities
   const cleanCity = cityName.replace(/^["']|["']$/g, '').trim();
   const cityDocId = cleanCity.toLowerCase().replace(/[^a-z0-9]/g, '_');
 
-  // 1. Comprovar primer si el document existeix directament amb el seu ID normalitzat
+  const completionData = {
+    status: 'completed',
+    target_name: cleanCity,
+    completed_at: FieldValue.serverTimestamp(),
+    critical_count: totalSavedStores
+  };
+
   const cityDocRef = db.collection('scanned_cities').doc(cityDocId);
   const cityDocSnap = await cityDocRef.get();
 
   if (cityDocSnap.exists) {
-    batch.set(cityDocRef, {
-      status: 'completed',
-      target_name: cleanCity,
-      completed_at: FieldValue.serverTimestamp(),
-      critical_count: criticalStores.size
-    }, { merge: true });
+    await cityDocRef.set(completionData, { merge: true });
   } else {
-    // 2. Si l'ID era diferent, buscar per camp de text
     const citySnapshot = await db.collection('scanned_cities')
       .where('target_name', '==', cleanCity)
       .limit(1)
       .get();
 
     if (!citySnapshot.empty) {
-      batch.set(citySnapshot.docs[0].ref, {
-        status: 'completed',
-        completed_at: FieldValue.serverTimestamp(),
-        critical_count: criticalStores.size
-      }, { merge: true });
+      await citySnapshot.docs[0].ref.set(completionData, { merge: true });
     } else {
-      // 3. Si no existia enlloc, es crea amb el seu ID normalitzat
-      batch.set(cityDocRef, {
-        target_name: cleanCity,
-        status: 'completed',
-        completed_at: FieldValue.serverTimestamp(),
-        critical_count: criticalStores.size
-      }, { merge: true });
+      await cityDocRef.set(completionData, { merge: true });
     }
   }
 
-  await batch.commit();
   const totalMinutes = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
-  console.log(`\n✅ Escombrada finalitzada per a ${cityName} en ${totalMinutes} minuts: ${criticalStores.size} comerços crítics desats a Firestore.`);
+  console.log(`\n✅ Escombrada finalitzada per a ${cityName} en ${totalMinutes} minuts: ${totalSavedStores} comerços crítics desats a Firestore.`);
 }
 
 // Lectura de la ciutat com a argument de línia d'ordres netejant possibles cometes
