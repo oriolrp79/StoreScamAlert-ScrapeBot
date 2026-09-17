@@ -18,6 +18,17 @@ async function scrapeCity(cityName) {
   console.log(`🔍 Iniciant escombrada exhaustiva i precisa per a: ${cityName}...`);
   const startTime = Date.now();
 
+  // Funció auxiliar per calcular el temps transcorregut en format 'Xm Ys' o 'Xs'
+  function getElapsedTime() {
+    const totalSeconds = Math.floor((Date.now() - startTime) / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    if (minutes > 0) {
+      return `${minutes}m ${seconds}s`;
+    }
+    return `${seconds}s`;
+  }
+
   const cleanCity = cityName.replace(/^["']|["']$/g, '').trim();
   const cityDocId = cleanCity.toLowerCase().replace(/[^a-z0-9]/g, '_');
   const cityDocRef = db.collection('scanned_cities').doc(cityDocId);
@@ -85,7 +96,8 @@ async function scrapeCity(cityName) {
   async function flushCategoryStores(currentCategory) {
     if (criticalStores.size === 0) return;
 
-    console.log(`\n💾 Pujant ${criticalStores.size} comerços crítics de [${currentCategory}] a Firestore...`);
+    const elapsed = getElapsedTime();
+    console.log(`\n💾 [T+${elapsed}] Pujant ${criticalStores.size} comerços crítics de [${currentCategory}] a Firestore...`);
     const batch = db.batch();
     
     for (const [id, storeData] of criticalStores.entries()) {
@@ -108,12 +120,13 @@ async function scrapeCity(cityName) {
     }, { merge: true });
 
     await batch.commit();
-    console.log(`📡 Pols de progrés enviat a l'app: ${totalSavedStores} comerços acumulats.`);
+    console.log(`📡 [T+${elapsed}] Pols de progrés enviat a l'app: ${totalSavedStores} comerços acumulats.`);
   }
 
   // Interceptar interrupcions o timeout de GitHub Actions per assegurar persistència
   const handleTermination = async (signal) => {
-    console.warn(`\n⚠️ Senyal ${signal} rebut (possible timeout del runner). Salvant dades d'emergència...`);
+    const elapsed = getElapsedTime();
+    console.warn(`\n⚠️ [T+${elapsed}] Senyal ${signal} rebut (possible timeout del runner). Salvant dades d'emergència...`);
     try {
       await flushCategoryStores('emergency_flush');
       await browser.close().catch(() => {});
